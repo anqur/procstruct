@@ -2,10 +2,14 @@ package procstruct
 
 import "github.com/anqur/procstruct/edsl"
 
-func Struct(name string) edsl.Struct {
+func File(pkg string) edsl.Filer {
 	return nil
 }
 
-func Tag() edsl.Tag {
+func Struct(name string) edsl.Structer {
+	return nil
+}
+
+func Tag() edsl.Tagger {
 	return nil
 }

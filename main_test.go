@@ -9,8 +9,16 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	s := procstruct.
+	s1 := procstruct.
 		Struct("Foo").
-		Field("Data", reflect.Int)
-	fmt.Println(s)
+		Field(
+			"Data",
+			reflect.Int,
+			procstruct.
+				Tag().Comma("json").
+				Key("name").
+				Key("omitempty").
+				Nil(),
+		)
+	fmt.Println(s1)
 }
