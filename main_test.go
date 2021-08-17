@@ -34,3 +34,19 @@ func TestStruct(t *testing.T) {
 	fmt.Println(s.FieldNames())
 	fmt.Println(s.TagKeys("json"))
 }
+
+func TestFile(t *testing.T) {
+	f := procstruct.File("foo").
+		Header("DO NOT EDIT!").
+		Structs(
+			procstruct.Struct("Foo").
+				Field("A", reflect.TypeOf(0)).
+				Field("B", reflect.TypeOf("")),
+			procstruct.Struct("Bar").
+				Field("A", reflect.TypeOf(float64(0))).
+				Field("B", reflect.TypeOf(false), procstruct.
+					Tag().Comma("json")),
+		)
+
+	fmt.Println(f)
+}

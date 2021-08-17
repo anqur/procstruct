@@ -6,7 +6,7 @@ import (
 )
 
 func File(pkg string) edsl.Filer {
-	return nil
+	return internal.Filer{PkgName: pkg}
 }
 
 func Struct(name string) edsl.Structer {

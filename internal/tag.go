@@ -36,7 +36,7 @@ func (c CommaTag) FirstKey() string {
 }
 
 func (c CommaTag) String() string {
-	return fmt.Sprintf("%s:%q", c.Name, strings.Join(c.items, ","))
+	return fmt.Sprintf("%s:%q", c.name, strings.Join(c.items, ","))
 }
 
 func (c CommaTag) Nil() edsl.CommaTag {
