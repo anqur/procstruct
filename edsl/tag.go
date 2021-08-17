@@ -13,6 +13,9 @@ type Tagger interface {
 
 type Tag interface {
 	fmt.Stringer
+
+	Name() string
+	FirstKey() string
 }
 
 type CommaTag interface {

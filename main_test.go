@@ -29,5 +29,8 @@ func TestStruct(t *testing.T) {
 			Entry("column", "float").
 			Nil().
 			Nil())
+
 	fmt.Println(s)
+	fmt.Println(s.FieldNames())
+	fmt.Println(s.TagKeys("json"))
 }

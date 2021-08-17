@@ -10,6 +10,9 @@ type Structer interface {
 
 	Field(name string, typ reflect.Type, tags ...Tag) Structer
 
+	FieldNames() []string
+	TagKeys(name string) []string
+
 	Type() reflect.Type
 	Value() reflect.Value
 	Interface() interface{}

@@ -10,21 +10,29 @@ import (
 type Tagger struct{}
 
 func (Tagger) Comma(name string) edsl.CommaTag {
-	return CommaTag{Name: name}
+	return CommaTag{name: name}
 }
 
 func (Tagger) CommaEqSpace(name string) edsl.CommaEqSpaceTag {
-	return CommaEqSpaceTag{Name: name}
+	return CommaEqSpaceTag{name: name}
 }
 
 func (t Tagger) SemiComma(name string) edsl.SemiCommaTag {
-	return SemiCommaTag{Name: name}
+	return SemiCommaTag{name: name}
 }
 
 type CommaTag struct {
-	Name string
-
+	name  string
 	items []string
+}
+
+func (c CommaTag) Name() string { return c.name }
+
+func (c CommaTag) FirstKey() string {
+	if len(c.items) == 0 {
+		return ""
+	}
+	return c.items[0]
 }
 
 func (c CommaTag) String() string {
@@ -47,9 +55,21 @@ type cesEntry struct {
 }
 
 type CommaEqSpaceTag struct {
-	Name string
+	name string
 
 	entries []*cesEntry
+}
+
+func (c CommaEqSpaceTag) Name() string { return c.name }
+
+func (c CommaEqSpaceTag) FirstKey() string {
+	if len(c.entries) == 0 {
+		return ""
+	}
+	if entry := c.entries[0]; entry != nil {
+		return entry.Key
+	}
+	return ""
 }
 
 func (c CommaEqSpaceTag) String() string {
@@ -68,7 +88,7 @@ func (c CommaEqSpaceTag) String() string {
 			entry.Key+"="+strings.Join(entry.Vals, " "),
 		)
 	}
-	return fmt.Sprintf("%s:%q", c.Name, strings.Join(entries, ","))
+	return fmt.Sprintf("%s:%q", c.name, strings.Join(entries, ","))
 }
 
 func (c CommaEqSpaceTag) Nil() edsl.CommaEqSpaceTag {
@@ -99,9 +119,21 @@ type scEntry struct {
 }
 
 type SemiCommaTag struct {
-	Name string
+	name string
 
 	entries []*scEntry
+}
+
+func (s SemiCommaTag) Name() string { return s.name }
+
+func (s SemiCommaTag) FirstKey() string {
+	if len(s.entries) == 0 {
+		return ""
+	}
+	if entry := s.entries[0]; entry != nil {
+		return entry.Key
+	}
+	return ""
 }
 
 func (s SemiCommaTag) String() string {
@@ -117,7 +149,7 @@ func (s SemiCommaTag) String() string {
 		}
 		entries = append(entries, entry.Key+":"+entry.Val)
 	}
-	return fmt.Sprintf("%s:%q", s.Name, strings.Join(entries, ";"))
+	return fmt.Sprintf("%s:%q", s.name, strings.Join(entries, ";"))
 }
 
 func (s SemiCommaTag) Nil() edsl.SemiCommaTag {
