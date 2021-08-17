@@ -18,12 +18,16 @@ type field struct {
 }
 
 func (f *field) Tag() reflect.StructTag {
+	if len(f.Tags) == 0 {
+		return ""
+	}
 	if f.tagCache == "" {
 		var tags []string
 		for _, tag := range f.Tags {
 			tags = append(tags, tag.String())
 		}
-		f.tagCache = reflect.StructTag(strings.Join(tags, " "))
+		s := fmt.Sprintf("`%s`", strings.Join(tags, " "))
+		f.tagCache = reflect.StructTag(s)
 	}
 	return f.tagCache
 }
@@ -40,7 +44,11 @@ func (s Structer) String() string {
 	for _, field := range s.Fields {
 		typ := field.Typ.Name()
 		if typ == "" {
-			panic(fmt.Errorf("field %q of type %q has no name", field.Name, s.Name))
+			panic(fmt.Errorf(
+				"field %q of type %q has no name",
+				field.Name,
+				s.Name,
+			))
 		}
 		line := []string{field.Name, typ, string(field.Tag())}
 		buf.WriteByte('\t')

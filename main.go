@@ -14,7 +14,7 @@ func Struct(name string) edsl.Structer {
 }
 
 func Tag() edsl.Tagger {
-	return nil
+	return internal.Tagger{}
 }
 
 func Of(structs ...interface{}) edsl.Structer {

@@ -8,14 +8,26 @@ import (
 	"github.com/anqur/procstruct"
 )
 
-func TestNew(t *testing.T) {
-	s1 := procstruct.
+func TestStruct(t *testing.T) {
+	s := procstruct.
 		Struct("Foo").
-		Field("Data", reflect.TypeOf(0))
-	//Field("Data", reflect.TypeOf(0), procstruct.
-	//	Tag().Comma("json").
-	//	Key("name").
-	//	Key("omitempty").
-	//	Nil())
-	fmt.Println(s1)
+		Field("Num", reflect.TypeOf(0), procstruct.
+			Tag().Comma("json").
+			Key("data").
+			Key("omitempty").
+			Nil().
+			Nil()).
+		Field("Str", reflect.TypeOf(""), procstruct.
+			Tag().CommaEqSpace("binding").
+			Key("required").
+			Entry("oneof", "todo", "pending", "done").
+			Nil().
+			Nil()).
+		Field("Float", reflect.TypeOf(float64(0)), procstruct.
+			Tag().SemiComma("gorm").
+			Key("not null").
+			Entry("column", "float").
+			Nil().
+			Nil())
+	fmt.Println(s)
 }
