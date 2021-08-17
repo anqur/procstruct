@@ -50,3 +50,18 @@ func TestFile(t *testing.T) {
 
 	fmt.Println(f)
 }
+
+type Data struct {
+	Total int `json:"total"`
+}
+
+func TestOf(t *testing.T) {
+	s := procstruct.File("foo").
+		Structs(
+			procstruct.Of(&Data{}).
+				Field("Results", reflect.TypeOf(nil), procstruct.
+					Tag().Comma("json").Key("results")),
+		)
+
+	fmt.Println(s)
+}

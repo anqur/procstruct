@@ -9,6 +9,10 @@ import (
 
 type Tagger struct{}
 
+func (t Tagger) AsIs(text string) edsl.AsIsTag {
+	return AsIsTag(text)
+}
+
 func (Tagger) Comma(name string) edsl.CommaTag {
 	return CommaTag{name: name}
 }
@@ -20,6 +24,12 @@ func (Tagger) CommaEqSpace(name string) edsl.CommaEqSpaceTag {
 func (t Tagger) SemiComma(name string) edsl.SemiCommaTag {
 	return SemiCommaTag{name: name}
 }
+
+type AsIsTag string
+
+func (a AsIsTag) String() string   { return string(a) }
+func (a AsIsTag) Name() string     { return a.String() }
+func (a AsIsTag) FirstKey() string { return a.String() }
 
 type CommaTag struct {
 	name  string

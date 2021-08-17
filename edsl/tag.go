@@ -3,6 +3,8 @@ package edsl
 import "fmt"
 
 type Tagger interface {
+	// AsIs is just as-is.
+	AsIs(text string) AsIsTag
 	// Comma `name:"key1,key2,,,"`
 	Comma(name string) CommaTag
 	// CommaEqSpace `name:"key1=value,key2=value1 value2,,,key3,,,"`
@@ -17,6 +19,8 @@ type Tag interface {
 	Name() string
 	FirstKey() string
 }
+
+type AsIsTag interface{ Tag }
 
 type CommaTag interface {
 	Tag

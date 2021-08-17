@@ -42,7 +42,12 @@ func (s Structer) String() string {
 	buf.WriteString(s.Name)
 	buf.WriteString(" struct {\n")
 	for _, field := range s.Fields {
-		typ := field.Typ.Name()
+		var typ string
+		if field.Typ == nil {
+			typ = "interface{}"
+		} else {
+			typ = field.Typ.Name()
+		}
 		if typ == "" {
 			panic(fmt.Errorf(
 				"field %q of type %q has no name",
