@@ -1,5 +1,7 @@
 package edsl
 
+import "fmt"
+
 type Tagger interface {
 	// Comma `name:"key1,key2,,,"`
 	Comma(name string) CommaTag
@@ -9,7 +11,9 @@ type Tagger interface {
 	SemiComma(name string) SemiCommaTag
 }
 
-type Tag interface{}
+type Tag interface {
+	fmt.Stringer
+}
 
 type CommaTag interface {
 	Tag

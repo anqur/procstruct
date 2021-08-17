@@ -11,14 +11,11 @@ import (
 func TestNew(t *testing.T) {
 	s1 := procstruct.
 		Struct("Foo").
-		Field(
-			"Data",
-			reflect.Int,
-			procstruct.
-				Tag().Comma("json").
-				Key("name").
-				Key("omitempty").
-				Nil(),
-		)
+		Field("Data", reflect.TypeOf(0))
+	//Field("Data", reflect.TypeOf(0), procstruct.
+	//	Tag().Comma("json").
+	//	Key("name").
+	//	Key("omitempty").
+	//	Nil())
 	fmt.Println(s1)
 }

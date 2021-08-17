@@ -8,8 +8,9 @@ import (
 type Structer interface {
 	fmt.Stringer
 
-	Field(name string, kind reflect.Kind, tags ...Tag) Structer
+	Field(name string, typ reflect.Type, tags ...Tag) Structer
 
 	Type() reflect.Type
 	Value() reflect.Value
+	Interface() interface{}
 }
