@@ -8,6 +8,16 @@ import (
 	"github.com/anqur/procstruct"
 )
 
+func ExampleStruct() {
+	s := procstruct.Struct("Foo").
+		Field("Data", reflect.TypeOf(0))
+	fmt.Println(s)
+	// Output:
+	// type Foo struct {
+	// 	Data int
+	// }
+}
+
 func TestStruct(t *testing.T) {
 	s := procstruct.
 		Struct("Foo").

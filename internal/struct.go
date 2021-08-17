@@ -55,7 +55,10 @@ func (s Structer) String() string {
 				s.Name,
 			))
 		}
-		line := []string{field.Name, typ, string(field.Tag())}
+		line := []string{field.Name, typ}
+		if tag := string(field.Tag()); tag != "" {
+			line = append(line, tag)
+		}
 		buf.WriteByte('\t')
 		buf.WriteString(strings.Join(line, " "))
 		buf.WriteByte('\n')

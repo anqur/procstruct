@@ -16,7 +16,13 @@ type Filer struct {
 }
 
 func (f Filer) String() string {
-	buf := bytes.NewBufferString("package ")
+	buf := new(bytes.Buffer)
+	if f.header != "" {
+		buf.WriteString("// ")
+		buf.WriteString(f.header)
+		buf.WriteByte('\n')
+	}
+	buf.WriteString("package ")
 	buf.WriteString(f.PkgName)
 	for _, st := range f.structs {
 		buf.WriteString("\n\n")

@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/anqur/procstruct/edsl"
@@ -10,7 +11,7 @@ import (
 type Tagger struct{}
 
 func (t Tagger) AsIs(text string) edsl.AsIsTag {
-	return AsIsTag(text)
+	return AsIsTag{StructTag: reflect.StructTag(text)}
 }
 
 func (Tagger) Comma(name string) edsl.CommaTag {
@@ -25,11 +26,20 @@ func (t Tagger) SemiComma(name string) edsl.SemiCommaTag {
 	return SemiCommaTag{name: name}
 }
 
-type AsIsTag string
+type AsIsTag struct {
+	reflect.StructTag
+}
 
-func (a AsIsTag) String() string   { return string(a) }
-func (a AsIsTag) Name() string     { return a.String() }
-func (a AsIsTag) FirstKey() string { return a.String() }
+func (a AsIsTag) String() string { return string(a.StructTag) }
+
+func (a AsIsTag) Name() string {
+	s := a.String()
+	return s[:strings.IndexByte(s, ':')]
+}
+
+func (a AsIsTag) FirstKey() string {
+	return a.Get(a.Name())
+}
 
 type CommaTag struct {
 	name  string
