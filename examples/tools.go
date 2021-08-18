@@ -15,9 +15,9 @@ type Item struct {
 }
 
 func main() {
-	var jsonNames []interface{}
-	for _, n := range procstruct.Of(Item{}).TagKeys("json") {
-		jsonNames = append(jsonNames, n)
+	var colNames []interface{}
+	for _, n := range procstruct.Of(Item{}).TagValues("gorm", "column") {
+		colNames = append(colNames, n)
 	}
 
 	s := procstruct.
@@ -28,16 +28,16 @@ func main() {
 				Field(
 					"Key",
 					reflect.TypeOf(""),
-					procstruct.Tag().Comma("json").
+					procstruct.Tag().Comma("form").
 						Key("key"),
 					procstruct.Tag().CommaEqSpace("validate").
 						Key("required").
-						Entry("oneof", jsonNames...),
+						Entry("oneof", colNames...),
 				).
 				Field(
 					"Order",
 					reflect.TypeOf(""),
-					procstruct.Tag().Comma("json").
+					procstruct.Tag().Comma("form").
 						Key("order"),
 					procstruct.Tag().CommaEqSpace("validate").
 						Key("required").

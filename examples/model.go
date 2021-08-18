@@ -2,6 +2,6 @@
 package main
 
 type ItemSorting struct {
-	Key   string `json:"key" validate:"required,oneof=name price"`
-	Order string `json:"order" validate:"required,oneof=asc desc"`
+	Key   string `form:"key" validate:"required,oneof=name price"`
+	Order string `form:"order" validate:"required,oneof=asc desc"`
 }

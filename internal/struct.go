@@ -99,6 +99,18 @@ func (s Structer) TagKeys(name string) (ret []string) {
 	return
 }
 
+func (s Structer) TagValues(name, key string) (ret []string) {
+	for _, field := range s.Fields {
+		for _, tag := range field.Tags {
+			if tag.Name() != name {
+				continue
+			}
+			ret = append(ret, tag.Value(key))
+		}
+	}
+	return
+}
+
 func (s Structer) Type() reflect.Type {
 	var reflFields []reflect.StructField
 	for _, field := range s.Fields {
