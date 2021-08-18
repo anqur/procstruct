@@ -2,17 +2,65 @@ package internal
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/anqur/procstruct/edsl"
+	"github.com/fatih/structtag"
 )
 
-type Tagger struct{}
+func ParseTag(text string) (ret []edsl.Tag) {
+	tags, err := structtag.Parse(text)
+	if err != nil {
+		panic(err)
+	}
 
-func (t Tagger) AsIs(text string) edsl.AsIsTag {
-	return AsIsTag{StructTag: reflect.StructTag(text)}
+	for _, tag := range tags.Tags() {
+		name := tag.Key
+		raw := tag.Value()
+		style := TagStyles.Get(name)
+
+		switch style {
+		case edsl.TagStyleComma:
+			t := Tagger{}.Comma(name)
+			for _, key := range strings.Split(raw, ",") {
+				t = t.Key(key)
+			}
+			ret = append(ret, t)
+		case edsl.TagStyleCommaEqSpace:
+			t := Tagger{}.CommaEqSpace(name)
+			for _, rawEntry := range strings.Split(raw, ",") {
+				entry := strings.SplitN(rawEntry, "=", 2)
+				if len(entry) == 1 {
+					t = t.Key(entry[0])
+					continue
+				}
+				var vals []interface{}
+				for _, v := range strings.Split(entry[1], " ") {
+					vals = append(vals, v)
+				}
+				t = t.Entry(entry[0], vals...)
+			}
+			ret = append(ret, t)
+		case edsl.TagStyleSemiColon:
+			t := Tagger{}.SemiColon(name)
+			for _, rawEntry := range strings.Split(raw, ";") {
+				entry := strings.SplitN(rawEntry, ":", 2)
+				if len(entry) == 1 {
+					t = t.Key(entry[0])
+					continue
+				}
+				t = t.Entry(entry[0], entry[1])
+			}
+			ret = append(ret, t)
+		default:
+			panic(fmt.Errorf("unknown tag style: %v", style))
+		}
+	}
+
+	return
 }
+
+type Tagger struct{}
 
 func (Tagger) Comma(name string) edsl.CommaTag {
 	return CommaTag{name: name}
@@ -24,21 +72,6 @@ func (Tagger) CommaEqSpace(name string) edsl.CommaEqSpaceTag {
 
 func (t Tagger) SemiColon(name string) edsl.SemiColonTag {
 	return SemiCommaTag{name: name}
-}
-
-type AsIsTag struct {
-	reflect.StructTag
-}
-
-func (a AsIsTag) String() string { return string(a.StructTag) }
-
-func (a AsIsTag) Name() string {
-	s := a.String()
-	return s[:strings.IndexByte(s, ':')]
-}
-
-func (a AsIsTag) FirstKey() string {
-	return a.Get(a.Name())
 }
 
 type CommaTag struct {
@@ -54,6 +87,8 @@ func (c CommaTag) FirstKey() string {
 	}
 	return c.items[0]
 }
+
+func (c CommaTag) Value(string) string { return c.FirstKey() }
 
 func (c CommaTag) String() string {
 	return fmt.Sprintf("%s:%q", c.name, strings.Join(c.items, ","))
@@ -88,6 +123,22 @@ func (c CommaEqSpaceTag) FirstKey() string {
 	}
 	if entry := c.entries[0]; entry != nil {
 		return entry.Key
+	}
+	return ""
+}
+
+func (c CommaEqSpaceTag) Value(key string) string {
+	for _, entry := range c.entries {
+		if entry == nil {
+			continue
+		}
+		if entry.Key != key {
+			continue
+		}
+		if len(entry.Vals) == 0 {
+			return ""
+		}
+		return entry.Vals[0]
 	}
 	return ""
 }
@@ -152,6 +203,19 @@ func (s SemiCommaTag) FirstKey() string {
 	}
 	if entry := s.entries[0]; entry != nil {
 		return entry.Key
+	}
+	return ""
+}
+
+func (s SemiCommaTag) Value(key string) string {
+	for _, entry := range s.entries {
+		if entry == nil {
+			continue
+		}
+		if entry.Key != key {
+			continue
+		}
+		return entry.Val
 	}
 	return ""
 }

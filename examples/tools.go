@@ -10,8 +10,8 @@ import (
 )
 
 type Item struct {
-	Name  string `json:"name" gorm:"column: name; not null; type: varchar(64)" validate:"required"`
-	Price int32  `json:"price" gorm:"column: price; not null; type: int(10)" validate:"required"`
+	Name  string `json:"name" gorm:"column:name;not null;type:varchar(64)" validate:"required"`
+	Price int32  `json:"price" gorm:"column:price;not null;type:int(10)" validate:"required"`
 }
 
 func main() {

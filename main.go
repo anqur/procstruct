@@ -20,6 +20,14 @@ func Tag() edsl.Tagger {
 	return internal.Tagger{}
 }
 
+func RegisterTagStyle(name string, style edsl.TagStyle) {
+	internal.TagStyles[name] = style
+}
+
+func SetDefaultTagStyle(style edsl.TagStyle) {
+	internal.TagStyleDefault = style
+}
+
 func Of(val interface{}) edsl.Structer {
 	v := reflect.ValueOf(val)
 	for v.Kind() == reflect.Ptr {
@@ -32,7 +40,28 @@ func Of(val interface{}) edsl.Structer {
 	s := Struct(typ.Name())
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
-		s = s.Field(field.Name, field.Type, Tag().AsIs(string(field.Tag)))
+		s = s.Field(
+			field.Name,
+			field.Type,
+			internal.ParseTag(string(field.Tag))...,
+		)
 	}
 	return s
+}
+
+func init() {
+	SetDefaultTagStyle(edsl.TagStyleComma)
+
+	RegisterTagStyle("uri", edsl.TagStyleComma)
+	RegisterTagStyle("form", edsl.TagStyleComma)
+	RegisterTagStyle("json", edsl.TagStyleComma)
+	RegisterTagStyle("header", edsl.TagStyleComma)
+	RegisterTagStyle("xml", edsl.TagStyleComma)
+	RegisterTagStyle("yaml", edsl.TagStyleComma)
+	RegisterTagStyle("toml", edsl.TagStyleComma)
+
+	RegisterTagStyle("binding", edsl.TagStyleCommaEqSpace)
+	RegisterTagStyle("validate", edsl.TagStyleCommaEqSpace)
+
+	RegisterTagStyle("gorm", edsl.TagStyleSemiColon)
 }

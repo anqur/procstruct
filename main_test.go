@@ -62,7 +62,7 @@ func TestFile(t *testing.T) {
 }
 
 type Data struct {
-	Total int `json:"total"`
+	Total int `json:"total,,,omitempty,,," validate:"required,oneof=1 2,,," gorm:"column:total;not null;;;;"`
 }
 
 func TestOf(t *testing.T) {
