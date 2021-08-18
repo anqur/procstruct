@@ -22,7 +22,7 @@ func (Tagger) CommaEqSpace(name string) edsl.CommaEqSpaceTag {
 	return CommaEqSpaceTag{name: name}
 }
 
-func (t Tagger) SemiComma(name string) edsl.SemiCommaTag {
+func (t Tagger) SemiColon(name string) edsl.SemiColonTag {
 	return SemiCommaTag{name: name}
 }
 
@@ -172,17 +172,17 @@ func (s SemiCommaTag) String() string {
 	return fmt.Sprintf("%s:%q", s.name, strings.Join(entries, ";"))
 }
 
-func (s SemiCommaTag) Nil() edsl.SemiCommaTag {
+func (s SemiCommaTag) Nil() edsl.SemiColonTag {
 	s.entries = append(s.entries, nil)
 	return s
 }
 
-func (s SemiCommaTag) Key(key string) edsl.SemiCommaTag {
+func (s SemiCommaTag) Key(key string) edsl.SemiColonTag {
 	s.entries = append(s.entries, &scEntry{Key: key})
 	return s
 }
 
-func (s SemiCommaTag) Entry(key string, value interface{}) edsl.SemiCommaTag {
+func (s SemiCommaTag) Entry(key string, value interface{}) edsl.SemiColonTag {
 	s.entries = append(
 		s.entries,
 		&scEntry{Key: key, Val: fmt.Sprintf("%v", value)},

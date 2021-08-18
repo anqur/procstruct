@@ -34,7 +34,7 @@ func TestStruct(t *testing.T) {
 			Nil().
 			Nil()).
 		Field("Float", reflect.TypeOf(float64(0)), procstruct.
-			Tag().SemiComma("gorm").
+			Tag().SemiColon("gorm").
 			Key("not null").
 			Entry("column", "float").
 			Nil().
