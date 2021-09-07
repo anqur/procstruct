@@ -40,6 +40,7 @@ type CommaEqSpaceTag interface {
 	Nil() CommaEqSpaceTag
 	Key(key string) CommaEqSpaceTag
 	Entry(key string, values ...interface{}) CommaEqSpaceTag
+	EntryString(key string, values ...string) CommaEqSpaceTag
 }
 
 type SemiColonTag interface {

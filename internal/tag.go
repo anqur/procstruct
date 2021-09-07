@@ -180,7 +180,14 @@ func (c CommaEqSpaceTag) Entry(
 	for _, val := range values {
 		vals = append(vals, fmt.Sprintf("%v", val))
 	}
-	c.entries = append(c.entries, &cesEntry{Key: key, Vals: vals})
+	return c.EntryString(key, vals...)
+}
+
+func (c CommaEqSpaceTag) EntryString(
+	key string,
+	values ...string,
+) edsl.CommaEqSpaceTag {
+	c.entries = append(c.entries, &cesEntry{Key: key, Vals: values})
 	return c
 }
 
