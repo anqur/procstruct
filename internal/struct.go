@@ -26,7 +26,7 @@ func (f *field) Tag() reflect.StructTag {
 		for _, tag := range f.Tags {
 			tags = append(tags, tag.String())
 		}
-		s := fmt.Sprintf("`%s`", strings.Join(tags, " "))
+		s := strings.Join(tags, " ")
 		f.tagCache = reflect.StructTag(s)
 	}
 	return f.tagCache
@@ -57,7 +57,7 @@ func (s Structer) String() string {
 		}
 		line := []string{field.Name, typ}
 		if tag := string(field.Tag()); tag != "" {
-			line = append(line, tag)
+			line = append(line, fmt.Sprintf("`%s`", tag))
 		}
 		buf.WriteByte('\t')
 		buf.WriteString(strings.Join(line, " "))
