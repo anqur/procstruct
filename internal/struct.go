@@ -80,6 +80,20 @@ func (s Structer) Field(
 	return s
 }
 
+func (s Structer) Of(val interface{}) edsl.Structer {
+	typ := DerefStructType(val)
+	var ret edsl.Structer = s
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		ret = ret.Field(
+			field.Name,
+			field.Type,
+			ParseTag(string(field.Tag))...,
+		)
+	}
+	return ret
+}
+
 func (s Structer) FieldNames() (ret []string) {
 	for _, field := range s.Fields {
 		ret = append(ret, field.Name)

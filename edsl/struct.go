@@ -9,6 +9,7 @@ type Structer interface {
 	fmt.Stringer
 
 	Field(name string, typ reflect.Type, tags ...Tag) Structer
+	Of(val interface{}) Structer
 
 	FieldNames() []string
 	TagKeys(name string) []string

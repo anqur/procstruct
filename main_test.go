@@ -77,3 +77,10 @@ func TestOf(t *testing.T) {
 
 	fmt.Println(s)
 }
+
+func TestStructerOf(t *testing.T) {
+	s := procstruct.Struct("Item").
+		Field("Name", reflect.TypeOf("")).
+		Of(&Data{})
+	fmt.Println(s)
+}
