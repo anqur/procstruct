@@ -28,7 +28,7 @@ func TestStruct(t *testing.T) {
 			Key("omitempty").
 			Nil().
 			Nil()).
-		Field("Str", reflect.TypeOf(""), procstruct.
+		Field("Str", reflect.PtrTo(reflect.TypeOf("")), procstruct.
 			Tag().CommaEqSpace("binding").
 			Key("required").
 			Entry("oneof", "todo", "pending", "done").

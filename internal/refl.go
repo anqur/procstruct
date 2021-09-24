@@ -15,3 +15,13 @@ func DerefStructType(val interface{}) reflect.Type {
 	}
 	panic(fmt.Errorf("expected a struct, found %q", v.Kind()))
 }
+
+func FormatType(typ reflect.Type) string {
+	if typ == nil {
+		return "interface{}"
+	}
+	if typ.Kind() == reflect.Ptr {
+		return "*" + FormatType(typ.Elem())
+	}
+	return typ.Name()
+}
