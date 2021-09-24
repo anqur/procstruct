@@ -20,8 +20,11 @@ func FormatType(typ reflect.Type) string {
 	if typ == nil {
 		return "interface{}"
 	}
-	if typ.Kind() == reflect.Ptr {
+	switch typ.Kind() {
+	case reflect.Ptr:
 		return "*" + FormatType(typ.Elem())
+	case reflect.Slice:
+		return "[]" + FormatType(typ.Elem())
 	}
 	return typ.Name()
 }

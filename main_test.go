@@ -34,7 +34,7 @@ func TestStruct(t *testing.T) {
 			Entry("oneof", "todo", "pending", "done").
 			Nil().
 			Nil()).
-		Field("Float", reflect.TypeOf(float64(0)), procstruct.
+		Field("Float", reflect.SliceOf(reflect.TypeOf(float64(0))), procstruct.
 			Tag().SemiColon("gorm").
 			Key("not null").
 			Entry("column", "float").
