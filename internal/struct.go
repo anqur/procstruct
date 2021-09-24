@@ -94,6 +94,14 @@ func (s Structer) Of(val interface{}) edsl.Structer {
 	return ret
 }
 
+func (s Structer) ForEach(
+	fn func(name string, typ reflect.Type, tags []edsl.Tag),
+) {
+	for _, f := range s.Fields {
+		fn(f.Name, f.Typ, f.Tags)
+	}
+}
+
 func (s Structer) FieldNames() (ret []string) {
 	for _, field := range s.Fields {
 		ret = append(ret, field.Name)

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/anqur/procstruct"
+	"github.com/anqur/procstruct/edsl"
 )
 
 func ExampleStruct() {
@@ -41,6 +42,9 @@ func TestStruct(t *testing.T) {
 			Nil())
 
 	fmt.Println(s)
+	s.ForEach(func(name string, typ reflect.Type, tags []edsl.Tag) {
+		fmt.Println(name, typ, tags)
+	})
 	fmt.Println(s.FieldNames())
 	fmt.Println(s.TagKeys("json"))
 	fmt.Println(s.TagValues("gorm", "column"))
