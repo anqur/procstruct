@@ -104,6 +104,15 @@ func (c CommaTag) Key(key string) edsl.CommaTag {
 	return c
 }
 
+func (c CommaTag) Of(tagger edsl.Tag) edsl.Tag {
+	rhs, ok := tagger.(CommaTag)
+	if !ok {
+		return c
+	}
+	c.items = append(c.items, rhs.items...)
+	return c
+}
+
 type cesEntry struct {
 	Key  string
 	Vals []string
@@ -191,6 +200,15 @@ func (c CommaEqSpaceTag) EntryString(
 	return c
 }
 
+func (c CommaEqSpaceTag) Of(tagger edsl.Tag) edsl.Tag {
+	rhs, ok := tagger.(CommaEqSpaceTag)
+	if !ok {
+		return c
+	}
+	c.entries = append(c.entries, rhs.entries...)
+	return c
+}
+
 type scEntry struct {
 	Key string
 	Val string
@@ -258,5 +276,14 @@ func (s SemiCommaTag) Entry(key string, value interface{}) edsl.SemiColonTag {
 		s.entries,
 		&scEntry{Key: key, Val: fmt.Sprintf("%v", value)},
 	)
+	return s
+}
+
+func (s SemiCommaTag) Of(tagger edsl.Tag) edsl.Tag {
+	rhs, ok := tagger.(SemiCommaTag)
+	if !ok {
+		return s
+	}
+	s.entries = append(s.entries, rhs.entries...)
 	return s
 }

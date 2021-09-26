@@ -25,6 +25,12 @@ func FormatType(typ reflect.Type) string {
 		return "*" + FormatType(typ.Elem())
 	case reflect.Slice:
 		return "[]" + FormatType(typ.Elem())
+	case reflect.Map:
+		return fmt.Sprintf(
+			"map[%s]%s",
+			FormatType(typ.Key()),
+			FormatType(typ.Elem()),
+		)
 	}
 	return typ.Name()
 }

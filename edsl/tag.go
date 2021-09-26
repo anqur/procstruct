@@ -25,6 +25,7 @@ type Tag interface {
 	Name() string
 	FirstKey() string
 	Value(key string) string
+	Of(tagger Tag) Tag
 }
 
 type CommaTag interface {
