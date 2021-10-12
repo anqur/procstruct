@@ -3,6 +3,7 @@ package internal
 import (
 	"bytes"
 	"fmt"
+	"go/ast"
 	"reflect"
 	"strings"
 
@@ -10,9 +11,10 @@ import (
 )
 
 type field struct {
-	Name string
-	Typ  reflect.Type
-	Tags []edsl.Tag
+	Name   string
+	Typ    reflect.Type
+	RawTyp ast.Expr
+	Tags   []edsl.Tag
 
 	tagCache reflect.StructTag
 }
@@ -42,7 +44,12 @@ func (s Structer) String() string {
 	buf.WriteString(s.Name)
 	buf.WriteString(" struct {\n")
 	for _, field := range s.Fields {
-		typ := FormatType(field.Typ)
+		var typ string
+		if rawTyp := field.RawTyp; rawTyp != nil {
+			typ = FormatTypeExpr(rawTyp)
+		} else {
+			typ = FormatType(field.Typ)
+		}
 		if typ == "" {
 			panic(fmt.Errorf(
 				"field %q of type %q has no name",
@@ -71,6 +78,19 @@ func (s Structer) Field(
 		Name: name,
 		Typ:  typ,
 		Tags: tags,
+	})
+	return s
+}
+
+func (s Structer) RawTypedField(
+	name string,
+	rawType ast.Expr,
+	tags ...edsl.Tag,
+) edsl.Structer {
+	s.Fields = append(s.Fields, &field{
+		Name:   name,
+		RawTyp: rawType,
+		Tags:   tags,
 	})
 	return s
 }
@@ -131,6 +151,12 @@ func (s Structer) TagValues(name, key string) (ret []string) {
 func (s Structer) Type() reflect.Type {
 	var reflFields []reflect.StructField
 	for _, field := range s.Fields {
+		if field.RawTyp != nil {
+			panic(fmt.Errorf(
+				"creating rtype from raw-typed field %q not supported",
+				field.Name,
+			))
+		}
 		reflFields = append(reflFields, reflect.StructField{
 			Name: field.Name,
 			Type: field.Typ,

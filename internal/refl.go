@@ -1,7 +1,11 @@
 package internal
 
 import (
+	"bytes"
 	"fmt"
+	"go/ast"
+	"go/printer"
+	"go/token"
 	"reflect"
 )
 
@@ -33,4 +37,12 @@ func FormatType(typ reflect.Type) string {
 		)
 	}
 	return typ.Name()
+}
+
+func FormatTypeExpr(expr ast.Expr) string {
+	buf := new(bytes.Buffer)
+	if err := printer.Fprint(buf, token.NewFileSet(), expr); err != nil {
+		panic(err)
+	}
+	return buf.String()
 }

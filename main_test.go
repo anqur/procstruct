@@ -2,6 +2,7 @@ package procstruct_test
 
 import (
 	"fmt"
+	"go/ast"
 	"reflect"
 	"testing"
 
@@ -48,6 +49,28 @@ func TestStruct(t *testing.T) {
 	fmt.Println(s.FieldNames())
 	fmt.Println(s.TagKeys("json"))
 	fmt.Println(s.TagValues("gorm", "column"))
+	fmt.Println(s.Interface())
+}
+
+func TestRawTypedField(t *testing.T) {
+	s := procstruct.Struct("Foo").
+		RawTypedField(
+			"Ctx",
+			&ast.StarExpr{
+				X: &ast.SelectorExpr{
+					X:   ast.NewIdent("foo"),
+					Sel: ast.NewIdent("Bar"),
+				},
+			},
+		)
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal(s)
+		}
+	}()
+
+	fmt.Println(s)
 	fmt.Println(s.Interface())
 }
 
