@@ -77,6 +77,9 @@ func TestRawTypedField(t *testing.T) {
 func TestFile(t *testing.T) {
 	f := procstruct.File("foo").
 		Header("DO NOT EDIT!").
+		Imports(
+			"go/parser",
+		).
 		Structs(
 			procstruct.Struct("Foo").
 				Field("A", reflect.TypeOf(0)).
