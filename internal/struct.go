@@ -11,10 +11,11 @@ import (
 )
 
 type field struct {
-	Name   string
-	Typ    reflect.Type
-	RawTyp ast.Expr
-	Tags   []edsl.Tag
+	Name    string
+	Typ     reflect.Type
+	RawTyp  ast.Expr
+	Tags    []edsl.Tag
+	Comment string
 
 	tagCache reflect.StructTag
 }
@@ -57,6 +58,9 @@ func (s Structer) String() string {
 				s.Name,
 			))
 		}
+		if c := field.Comment; c != "" {
+			buf.WriteString(fmt.Sprintf("\t// %s\n", c))
+		}
 		line := []string{field.Name, typ}
 		if tag := string(field.Tag()); tag != "" {
 			line = append(line, fmt.Sprintf("`%s`", tag))
@@ -72,12 +76,14 @@ func (s Structer) String() string {
 func (s Structer) Field(
 	name string,
 	typ reflect.Type,
+	comment string,
 	tags ...edsl.Tag,
 ) edsl.Structer {
 	s.Fields = append(s.Fields, &field{
-		Name: name,
-		Typ:  typ,
-		Tags: tags,
+		Name:    name,
+		Typ:     typ,
+		Tags:    tags,
+		Comment: comment,
 	})
 	return s
 }
@@ -85,12 +91,14 @@ func (s Structer) Field(
 func (s Structer) RawTypedField(
 	name string,
 	rawType ast.Expr,
+	comment string,
 	tags ...edsl.Tag,
 ) edsl.Structer {
 	s.Fields = append(s.Fields, &field{
-		Name:   name,
-		RawTyp: rawType,
-		Tags:   tags,
+		Name:    name,
+		RawTyp:  rawType,
+		Tags:    tags,
+		Comment: comment,
 	})
 	return s
 }
@@ -103,6 +111,7 @@ func (s Structer) Of(val interface{}) edsl.Structer {
 		ret = ret.Field(
 			field.Name,
 			field.Type,
+			"", // this information lost :(
 			ParseTag(string(field.Tag))...,
 		)
 	}

@@ -12,10 +12,11 @@ import (
 
 func ExampleStruct() {
 	s := procstruct.Struct("Foo").
-		Field("Data", reflect.TypeOf(0))
+		Field("Data", reflect.TypeOf(0), "Data of Foo.")
 	fmt.Println(s)
 	// Output:
 	// type Foo struct {
+	// 	// Data of Foo.
 	// 	Data int
 	// }
 }
@@ -23,24 +24,39 @@ func ExampleStruct() {
 func TestStruct(t *testing.T) {
 	s := procstruct.
 		Struct("Foo").
-		Field("Num", reflect.TypeOf(0), procstruct.
-			Tag().Comma("json").
-			Key("data").
-			Key("omitempty").
-			Nil().
-			Nil()).
-		Field("Str", reflect.PtrTo(reflect.TypeOf("")), procstruct.
-			Tag().CommaEqSpace("binding").
-			Key("required").
-			Entry("oneof", "todo", "pending", "done").
-			Nil().
-			Nil()).
-		Field("Float", reflect.SliceOf(reflect.TypeOf(float64(0))), procstruct.
-			Tag().SemiColon("gorm").
-			Key("not null").
-			Entry("column", "float").
-			Nil().
-			Nil())
+		Field(
+			"Num",
+			reflect.TypeOf(0),
+			"Num",
+			procstruct.Tag().
+				Comma("json").
+				Key("data").
+				Key("omitempty").
+				Nil().
+				Nil(),
+		).
+		Field(
+			"Str",
+			reflect.PtrTo(reflect.TypeOf("")),
+			"Str",
+			procstruct.Tag().
+				CommaEqSpace("binding").
+				Key("required").
+				Entry("oneof", "todo", "pending", "done").
+				Nil().
+				Nil(),
+		).
+		Field(
+			"Float",
+			reflect.SliceOf(reflect.TypeOf(float64(0))),
+			"Float",
+			procstruct.Tag().
+				SemiColon("gorm").
+				Key("not null").
+				Entry("column", "float").
+				Nil().
+				Nil(),
+		)
 
 	fmt.Println(s)
 	s.ForEach(func(name string, typ reflect.Type, tags []edsl.Tag) {
@@ -62,6 +78,7 @@ func TestRawTypedField(t *testing.T) {
 					Sel: ast.NewIdent("Bar"),
 				},
 			},
+			"Ctx is the context",
 		)
 
 	defer func() {
@@ -82,12 +99,16 @@ func TestFile(t *testing.T) {
 		).
 		Structs(
 			procstruct.Struct("Foo").
-				Field("A", reflect.TypeOf(0)).
-				Field("B", reflect.TypeOf("")),
+				Field("A", reflect.TypeOf(0), "A").
+				Field("B", reflect.TypeOf(""), "B"),
 			procstruct.Struct("Bar").
-				Field("A", reflect.TypeOf(float64(0))).
-				Field("B", reflect.TypeOf(false), procstruct.
-					Tag().Comma("json")),
+				Field("A", reflect.TypeOf(float64(0)), "A").
+				Field(
+					"B",
+					reflect.TypeOf(false),
+					"B",
+					procstruct.Tag().Comma("json"),
+				),
 		)
 
 	fmt.Println(f)
@@ -101,8 +122,12 @@ func TestOf(t *testing.T) {
 	s := procstruct.File("foo").
 		Structs(
 			procstruct.Of(&Data{}).
-				Field("Results", reflect.TypeOf(nil), procstruct.
-					Tag().Comma("json").Key("results")),
+				Field(
+					"Results",
+					reflect.TypeOf(nil),
+					"Results",
+					procstruct.Tag().Comma("json").Key("results"),
+				),
 		)
 
 	fmt.Println(s)
@@ -110,7 +135,7 @@ func TestOf(t *testing.T) {
 
 func TestStructerOf(t *testing.T) {
 	s := procstruct.Struct("Item").
-		Field("Name", reflect.TypeOf("")).
+		Field("Name", reflect.TypeOf(""), "Name").
 		Of(&Data{})
 	fmt.Println(s)
 }
