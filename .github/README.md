@@ -25,10 +25,11 @@ import (
 func main() {
 	s := procstruct.
 		Struct("Foo").
-		Field("Data", reflect.TypeOf(0))
+		Field("Data", reflect.TypeOf(0), "Data of Foo.")
 	fmt.Println(s)
 	// Output:
 	// type Foo struct {
+	//  // Data of Foo.
 	//  Data int
 	// }
 }
