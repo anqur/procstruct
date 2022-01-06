@@ -65,7 +65,7 @@ func (s Structer) String() string {
 			))
 		}
 		if c := field.Comment; c != "" {
-			buf.WriteString(fmt.Sprintf("\t// %s %s\n", s.Name, c))
+			buf.WriteString(fmt.Sprintf("\t// %s %s\n", field.Name, c))
 		}
 		line := []string{field.Name, typ}
 		if tag := string(field.Tag()); tag != "" {

@@ -11,12 +11,15 @@ import (
 )
 
 func ExampleStruct() {
-	s := procstruct.Struct("Foo").
-		Field("Data", reflect.TypeOf(0), "Data of Foo.")
+	s := procstruct.
+		Struct("Foo").
+		Header("is a foo.").
+		Field("Data", reflect.TypeOf(0), "is the data.")
 	fmt.Println(s)
 	// Output:
+	// // Foo is a foo.
 	// type Foo struct {
-	// 	// Data of Foo.
+	// 	// Data is the data.
 	// 	Data int
 	// }
 }
@@ -27,7 +30,7 @@ func TestStruct(t *testing.T) {
 		Field(
 			"Num",
 			reflect.TypeOf(0),
-			"Num",
+			"is a number",
 			procstruct.Tag().
 				Comma("json").
 				Key("data").
@@ -38,7 +41,7 @@ func TestStruct(t *testing.T) {
 		Field(
 			"Str",
 			reflect.PtrTo(reflect.TypeOf("")),
-			"Str",
+			"is a string",
 			procstruct.Tag().
 				CommaEqSpace("binding").
 				Key("required").
@@ -49,7 +52,7 @@ func TestStruct(t *testing.T) {
 		Field(
 			"Float",
 			reflect.SliceOf(reflect.TypeOf(float64(0))),
-			"Float",
+			"is a float",
 			procstruct.Tag().
 				SemiColon("gorm").
 				Key("not null").
@@ -78,7 +81,7 @@ func TestRawTypedField(t *testing.T) {
 					Sel: ast.NewIdent("Bar"),
 				},
 			},
-			"Ctx is the context",
+			"is the context",
 		)
 
 	defer func() {
@@ -99,14 +102,14 @@ func TestFile(t *testing.T) {
 		).
 		Structs(
 			procstruct.Struct("Foo").
-				Field("A", reflect.TypeOf(0), "A").
-				Field("B", reflect.TypeOf(""), "B"),
+				Field("A", reflect.TypeOf(0), "").
+				Field("B", reflect.TypeOf(""), ""),
 			procstruct.Struct("Bar").
 				Field("A", reflect.TypeOf(float64(0)), "A").
 				Field(
 					"B",
 					reflect.TypeOf(false),
-					"B",
+					"",
 					procstruct.Tag().Comma("json"),
 				),
 		)
@@ -125,7 +128,7 @@ func TestOf(t *testing.T) {
 				Field(
 					"Results",
 					reflect.TypeOf(nil),
-					"Results",
+					"",
 					procstruct.Tag().Comma("json").Key("results"),
 				),
 		)
@@ -135,7 +138,7 @@ func TestOf(t *testing.T) {
 
 func TestStructerOf(t *testing.T) {
 	s := procstruct.Struct("Item").
-		Field("Name", reflect.TypeOf(""), "Name").
+		Field("Name", reflect.TypeOf(""), "").
 		Of(&Data{})
 	fmt.Println(s)
 }
