@@ -9,6 +9,8 @@ import (
 type Structer interface {
 	fmt.Stringer
 
+	Header(text string) Structer
+
 	Field(name string, typ reflect.Type, comment string, tags ...Tag) Structer
 	RawTypedField(name string, rawType ast.Expr, comment string, tags ...Tag) Structer
 	Of(val interface{}) Structer

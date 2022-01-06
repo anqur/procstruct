@@ -36,12 +36,18 @@ func (f *field) Tag() reflect.StructTag {
 }
 
 type Structer struct {
-	Name   string
-	Fields []*field
+	Name, Comment string
+	Fields        []*field
 }
 
 func (s Structer) String() string {
-	buf := bytes.NewBufferString("type ")
+	buf := new(bytes.Buffer)
+	if c := s.Comment; c != "" {
+		buf.WriteString("// ")
+		buf.WriteString(c)
+		buf.WriteByte('\n')
+	}
+	buf.WriteString("type ")
 	buf.WriteString(s.Name)
 	buf.WriteString(" struct {\n")
 	for _, field := range s.Fields {
@@ -59,7 +65,7 @@ func (s Structer) String() string {
 			))
 		}
 		if c := field.Comment; c != "" {
-			buf.WriteString(fmt.Sprintf("\t// %s\n", c))
+			buf.WriteString(fmt.Sprintf("\t// %s %s\n", s.Name, c))
 		}
 		line := []string{field.Name, typ}
 		if tag := string(field.Tag()); tag != "" {
@@ -71,6 +77,13 @@ func (s Structer) String() string {
 	}
 	buf.WriteByte('}')
 	return buf.String()
+}
+
+func (s Structer) Header(text string) edsl.Structer {
+	if s.Comment == "" {
+		s.Comment = fmt.Sprintf("%s %s", s.Name, text)
+	}
+	return s
 }
 
 func (s Structer) Field(
