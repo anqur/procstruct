@@ -90,6 +90,8 @@ func (c CommaTag) FirstKey() string {
 
 func (c CommaTag) Value(string) string { return c.FirstKey() }
 
+func (c CommaTag) Values(string) []string { return c.items }
+
 func (c CommaTag) String() string {
 	return fmt.Sprintf("%s:%q", c.name, strings.Join(c.items, ","))
 }
@@ -137,6 +139,14 @@ func (c CommaEqSpaceTag) FirstKey() string {
 }
 
 func (c CommaEqSpaceTag) Value(key string) string {
+	vals := c.Values(key)
+	if len(vals) == 0 {
+		return ""
+	}
+	return vals[0]
+}
+
+func (c CommaEqSpaceTag) Values(key string) []string {
 	for _, entry := range c.entries {
 		if entry == nil {
 			continue
@@ -144,12 +154,9 @@ func (c CommaEqSpaceTag) Value(key string) string {
 		if entry.Key != key {
 			continue
 		}
-		if len(entry.Vals) == 0 {
-			return ""
-		}
-		return entry.Vals[0]
+		return entry.Vals
 	}
-	return ""
+	return nil
 }
 
 func (c CommaEqSpaceTag) String() string {
@@ -210,8 +217,7 @@ func (c CommaEqSpaceTag) Of(tagger edsl.Tag) edsl.Tag {
 }
 
 type scEntry struct {
-	Key string
-	Val string
+	Key, Val string
 }
 
 type SemiCommaTag struct {
@@ -243,6 +249,14 @@ func (s SemiCommaTag) Value(key string) string {
 		return entry.Val
 	}
 	return ""
+}
+
+func (s SemiCommaTag) Values(key string) []string {
+	val := s.Value(key)
+	if val == "" {
+		return nil
+	}
+	return []string{val}
 }
 
 func (s SemiCommaTag) String() string {

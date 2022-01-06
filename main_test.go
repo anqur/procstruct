@@ -68,6 +68,7 @@ func TestStruct(t *testing.T) {
 	fmt.Println(s.FieldNames())
 	fmt.Println(s.TagKeys("json"))
 	fmt.Println(s.TagValues("gorm", "column"))
+	fmt.Println(s.TagValues("binding", "oneof"))
 	fmt.Println(s.Interface())
 }
 

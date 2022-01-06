@@ -164,7 +164,7 @@ func (s Structer) TagValues(name, key string) (ret []string) {
 			if tag.Name() != name {
 				continue
 			}
-			ret = append(ret, tag.Value(key))
+			ret = append(ret, tag.Values(key)...)
 		}
 	}
 	return
